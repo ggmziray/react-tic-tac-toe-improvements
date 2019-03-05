@@ -14,6 +14,7 @@ class Board extends React.Component {
 	renderSquare(i, y, x) {
 		return (
 			<Square
+				key={i}
 				value={this.props.squares[i]}
 				onClick={() => this.props.onClick(i, y, x)}
 			/>
@@ -34,7 +35,7 @@ class Board extends React.Component {
 			row++;
 			col = 1;
 			board.push(
-				<div key="i" className="board-row">
+				<div key={i} className="board-row">
 					{squares}
 				</div>
 			);
@@ -71,6 +72,14 @@ class Game extends React.Component {
 		});
 	}
 
+	sortMovesToggle() {
+		const history = this.state.history.slice();
+		this.setState({
+			history: history.reverse(),
+			isSortDirectionAsc: !this.state.isSortDirectionAsc
+		});
+	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -80,7 +89,8 @@ class Game extends React.Component {
 				}
 			],
 			stepNumber: 0,
-			xIsNext: true
+			xIsNext: true,
+			isSortDirectionAsc: true
 		};
 	}
 	render() {
@@ -103,7 +113,7 @@ class Game extends React.Component {
 		});
 
 		let status = winner
-			? `Winner: ${winner}`
+			? `Winner: ${winner.winningChar}`
 			: history.length === 10
 			? 'Draw'
 			: `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
@@ -119,6 +129,9 @@ class Game extends React.Component {
 				<div className="game-info">
 					<div>{status}</div>
 					<ol>{moves}</ol>
+					<button onClick={() => this.sortMovesToggle()}>
+						Sort Moves {!this.state.isSortDirectionAsc ? 'ASC' : 'DESC'}
+					</button>
 				</div>
 			</div>
 		);
@@ -140,7 +153,10 @@ function calculateWinner(squares) {
 	for (let i = 0; i < lines.length; i++) {
 		const [a, b, c] = lines[i];
 		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-			return squares[a];
+			return {
+				winningLine: lines[i],
+				winningChar: squares[a]
+			};
 		}
 	}
 	return null;
