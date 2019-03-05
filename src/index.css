@@ -53,3 +53,7 @@ ul {
 .current-move button {
 	font-weight: bold;
 }
+
+.winning-square {
+	color: rgb(230, 66, 66);
+}
