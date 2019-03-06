@@ -36,8 +36,6 @@ class Board extends React.Component {
 					isWinningSquare = this.props.winningLine.includes(i + j)
 						? true
 						: false;
-				} else {
-					isWinningSquare = null;
 				}
 				squares.push(this.renderSquare(i + j, col, row, isWinningSquare));
 				col++;
@@ -109,8 +107,12 @@ class Game extends React.Component {
 		const winner = calculateWinner(current.squares);
 
 		const moves = history.map((step, move) => {
-			const desc = move
-				? `Go to move #${move} - ${step.move}`
+			let sortedMove = this.state.isSortDirectionAsc
+				? move
+				: history.length - 1 - move;
+
+			const desc = sortedMove
+				? `Go to move #${sortedMove} - ${step.move}`
 				: 'Go to game start';
 			return (
 				<li
